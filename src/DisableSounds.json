@@ -1,0 +1,26 @@
+{
+	"WeaponSounds.Enabled": {
+		"en-us": "Loud sounds from weapons were {{red}}Enabled",
+		"ru-ru": "Громкие звуки от оружия были {{red}}Включены"
+	},
+	"WeaponSounds.Disabled": {
+		"en-us": "Loud sounds from weapons were {{green}}Disabled",
+		"ru-ru": "Громкие звуки от оружия были {{green}}Отключены"
+	},
+	"HitSounds.Enabled": {
+		"en-us": "Hit sounds were {{red}}Enabled",
+		"ru-ru": "Звуки попаданий были {{red}}Включены"
+	},
+	"HitSounds.Disabled": {
+		"en-us": "Hit sounds were {{green}}Disabled",
+		"ru-ru": "Звуки попаданий были {{green}}Отключены"
+	},
+	"FootSteps.Enabled": {
+		"en-us": "Footsteps sounds were {{red}}Enabled",
+		"ru-ru": "Звуки шагов были {{red}}Включены"
+	},
+	"FootSteps.Disabled": {
+		"en-us": "Footsteps sounds were {{green}}Disabled",
+		"ru-ru": "Звуки шагов были {{green}}Отключены"
+	}
+}
