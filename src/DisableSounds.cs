@@ -154,8 +154,8 @@ namespace MS_DisableSounds
             }
             if (client.GetPlayerController() is { } player && GetLocalizer() is { } lm)
             {
-                var localizer = lm.GetLocalizer(client);
-                player.Print(command.ChatTrigger ? HudPrintChannel.Chat : HudPrintChannel.Console, $" {ChatColor.Blue}[{ChatColor.Green}DisableSounds{ChatColor.Blue}]{ChatColor.White} {ReplaceColorTags(g_bWeaponSounds[client.Slot] ? localizer.Format("WeaponSounds.Disabled") : localizer.Format("WeaponSounds.Enabled"))}");
+                var localizer = lm.For(client);
+                player.Print(command.ChatTrigger ? HudPrintChannel.Chat : HudPrintChannel.Console, $" {ChatColor.Blue}[{ChatColor.Green}DisableSounds{ChatColor.Blue}]{ChatColor.White} {ReplaceColorTags(g_bWeaponSounds[client.Slot] ? localizer.Text("WeaponSounds.Disabled") : localizer.Text("WeaponSounds.Enabled"))}");
             }
             return ECommandAction.Stopped;
         }
@@ -170,8 +170,8 @@ namespace MS_DisableSounds
             }
             if (client.GetPlayerController() is { } player && GetLocalizer() is { } lm)
             {
-                var localizer = lm.GetLocalizer(client);
-                player.Print(command.ChatTrigger ? HudPrintChannel.Chat : HudPrintChannel.Console, $" {ChatColor.Blue}[{ChatColor.Green}DisableSounds{ChatColor.Blue}]{ChatColor.White} {ReplaceColorTags(g_bHitSounds[client.Slot] ? localizer.Format("HitSounds.Disabled") : localizer.Format("HitSounds.Enabled"))}");
+                var localizer = lm.For(client);
+                player.Print(command.ChatTrigger ? HudPrintChannel.Chat : HudPrintChannel.Console, $" {ChatColor.Blue}[{ChatColor.Green}DisableSounds{ChatColor.Blue}]{ChatColor.White} {ReplaceColorTags(g_bHitSounds[client.Slot] ? localizer.Text("HitSounds.Disabled") : localizer.Text("HitSounds.Enabled"))}");
             }
             return ECommandAction.Stopped;
         }
@@ -186,8 +186,8 @@ namespace MS_DisableSounds
             }
             if (client.GetPlayerController() is { } player && GetLocalizer() is { } lm)
             {
-                var localizer = lm.GetLocalizer(client);
-                player.Print(command.ChatTrigger ? HudPrintChannel.Chat : HudPrintChannel.Console, $" {ChatColor.Blue}[{ChatColor.Green}DisableSounds{ChatColor.Blue}]{ChatColor.White} {ReplaceColorTags(g_bFootSteps[client.Slot] ? localizer.Format("FootSteps.Disabled") : localizer.Format("FootSteps.Enabled"))}");
+                var localizer = lm.For(client);
+                player.Print(command.ChatTrigger ? HudPrintChannel.Chat : HudPrintChannel.Console, $" {ChatColor.Blue}[{ChatColor.Green}DisableSounds{ChatColor.Blue}]{ChatColor.White} {ReplaceColorTags(g_bFootSteps[client.Slot] ? localizer.Text("FootSteps.Disabled") : localizer.Text("FootSteps.Enabled"))}");
             }
             return ECommandAction.Stopped;
         }
