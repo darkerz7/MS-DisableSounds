@@ -9,6 +9,8 @@ using Sharp.Shared.Managers;
 using Sharp.Shared.Objects;
 using Sharp.Shared.Types;
 using Sharp.Shared.Units;
+using System.Collections.Frozen;
+using System.Text.RegularExpressions;
 
 namespace MS_DisableSounds
 {
@@ -120,26 +122,23 @@ namespace MS_DisableSounds
         {
             if (previousResult.Action is EHookAction.SkipCallReturnOverride) return default;
 
-            for (int i = 0; i < FootStepsArray.Length; i++)
-                if (param.SoundName.Equals(FootStepsArray[i]))
-                {
-                    param.UpdateReceiver(new NetworkReceiver([.. _clients.GetGameClients(true).Where(x => !g_bFootSteps[x.Slot]).Select(x => x.Slot)]));
-                    return new HookReturnValue<SoundOpEventGuid>(EHookAction.ChangeParamReturnDefault);
-                }
+            if (FootStepsArray.Contains(param.SoundName))
+            {
+                param.UpdateReceiver(new NetworkReceiver([.. _clients.GetGameClients(true).Where(x => !g_bFootSteps[x.Slot]).Select(x => x.Slot)]));
+                return new HookReturnValue<SoundOpEventGuid>(EHookAction.ChangeParamReturnDefault);
+            }
 
-            for (int i = 0; i < HitSoundsArray.Length; i++)
-                if (param.SoundName.Equals(HitSoundsArray[i]))
-                {
-                    param.UpdateReceiver(new NetworkReceiver([.. _clients.GetGameClients(true).Where(x => !g_bHitSounds[x.Slot]).Select(x => x.Slot)]));
-                    return new HookReturnValue<SoundOpEventGuid>(EHookAction.ChangeParamReturnDefault);
-                }
+            if (HitSoundsArray.Contains(param.SoundName))
+            {
+                param.UpdateReceiver(new NetworkReceiver([.. _clients.GetGameClients(true).Where(x => !g_bHitSounds[x.Slot]).Select(x => x.Slot)]));
+                return new HookReturnValue<SoundOpEventGuid>(EHookAction.ChangeParamReturnDefault);
+            }
 
-            for (int i = 0; i < WeaponSoundsArray.Length; i++)
-                if (param.SoundName.Equals(WeaponSoundsArray[i]))
-                {
-                    param.UpdateReceiver(new NetworkReceiver([.. _clients.GetGameClients(true).Where(x => !g_bWeaponSounds[x.Slot]).Select(x => x.Slot)]));
-                    return new HookReturnValue<SoundOpEventGuid>(EHookAction.ChangeParamReturnDefault);
-                }
+            if (WeaponSoundsArray.Contains(param.SoundName))
+            {
+                param.UpdateReceiver(new NetworkReceiver([.. _clients.GetGameClients(true).Where(x => !g_bWeaponSounds[x.Slot]).Select(x => x.Slot)]));
+                return new HookReturnValue<SoundOpEventGuid>(EHookAction.ChangeParamReturnDefault);
+            }
 
             return new HookReturnValue<SoundOpEventGuid>();
         }
@@ -192,32 +191,32 @@ namespace MS_DisableSounds
             return ECommandAction.Stopped;
         }
 
-        private string ReplaceColorTags(string input)
+        private static readonly IReadOnlyDictionary<string, string> ColorMap = new Dictionary<string, string>
         {
-            for (var i = 0; i < colorPatterns.Length; i++)
-                input = input.Replace(colorPatterns[i], colorReplacements[i]);
+            ["{default}"] = "\x01",     ["{darkred}"] = "\x02",     ["{purple}"] = "\x03",
+            ["{green}"] = "\x04",       ["{lightgreen}"] = "\x05",  ["{lime}"] = "\x06",
+            ["{red}"] = "\x07",         ["{grey}"] = "\x08",        ["{olive}"] = "\x09",
+            ["{a}"] = "\x0A",           ["{lightblue}"] = "\x0B",   ["{blue}"] = "\x0C",
+            ["{d}"] = "\x0D",           ["{pink}"] = "\x0E",        ["{darkorange}"] = "\x0F",
+            ["{orange}"] = "\x10",      ["{white}"] = "\x01",       ["{yellow}"] = "\x09",
+            ["{magenta}"] = "\x0E",     ["{silver}"] = "\x0A",      ["{bluegrey}"] = "\x0D",
+            ["{lightred}"] = "\x0F",    ["{cyan}"] = "\x03",        ["{gray}"] = "\x08"
+        };
 
-            return input;
+        private static readonly Regex ColorRegex = new(string.Join("|", ColorMap.Keys.Select(Regex.Escape)), RegexOptions.Compiled);
+
+        private static string ReplaceColorTags(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return input;
+            return ColorRegex.Replace(input, m => ColorMap[m.Value]);
         }
-        readonly string[] colorPatterns =
-        [
-            "{default}", "{darkred}", "{purple}", "{green}", "{lightgreen}", "{lime}", "{red}", "{grey}",
-            "{olive}", "{a}", "{lightblue}", "{blue}", "{d}", "{pink}", "{darkorange}", "{orange}",
-            "{white}", "{yellow}", "{magenta}", "{silver}", "{bluegrey}", "{lightred}", "{cyan}", "{gray}"
-        ];
-        readonly string[] colorReplacements =
-        [
-            "\x01", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07", "\x08",
-            "\x09", "\x0A", "\x0B", "\x0C", "\x0D", "\x0E", "\x0F", "\x10",
-            "\x01", "\x09", "\x0E", "\x0A", "\x0D", "\x0F", "\x03", "\x08"
-        ];
 
-        readonly string[] FootStepsArray = [
+        readonly FrozenSet<string> FootStepsArray = [
             "T_Default.StepLeft",
             "CT_Default.StepLeft"
         ];
 
-        readonly string[] HitSoundsArray = [
+        readonly FrozenSet<string> HitSoundsArray = [
             "Player.DamageBody.AttackerFeedback",
             "Player.DamageBody.Onlooker",
             "Player.DamageBody.Victim",
@@ -262,7 +261,7 @@ namespace MS_DisableSounds
             "Player.DeathHeadShot.Dink"
         ];
 
-        readonly string[] WeaponSoundsArray = [
+        readonly FrozenSet<string> WeaponSoundsArray = [
             "Weapon_Knife.HitWall",
             "Weapon_Knife.Slash",
             "Weapon_Knife.Hit",
